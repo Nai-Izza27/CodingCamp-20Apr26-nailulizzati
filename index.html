@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== GREETING HEADER ===== -->
+  <header class="greeting-section" role="banner">
+
+    <!-- Theme toggle — top-right corner -->
+    <button id="btn-theme" class="btn-theme" aria-label="Toggle light/dark mode" title="Toggle theme">
+      <span id="theme-icon">☀️</span>
+    </button>
+
+    <h1 id="greeting-message"></h1>
+
+    <!-- Inline name editor -->
+    <div class="name-editor" id="name-editor">
+      <span id="name-display" class="name-display" title="Click to set your name"></span>
+      <button id="btn-edit-name" class="btn-action" aria-label="Edit your name">✏️</button>
+    </div>
+
+    <p id="current-datetime" aria-live="polite"></p>
+  </header>
+
+  <main class="dashboard-grid">
+
+    <!-- ===== FOCUS TIMER ===== -->
+    <section class="card timer-card" aria-labelledby="timer-heading">
+      <h2 id="timer-heading">Focus Timer</h2>
+
+      <!-- SVG progress ring -->
+      <div class="timer-ring-wrapper" aria-hidden="true">
+        <svg class="timer-ring" viewBox="0 0 120 120">
+          <circle class="ring-track" cx="60" cy="60" r="52" />
+          <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="52" />
+        </svg>
+        <div class="timer-display" id="timer-display">25:00</div>
+      </div>
+
+      <div class="timer-controls">
+        <button id="btn-start" class="btn btn-timer">Start</button>
+        <button id="btn-stop"  class="btn btn-timer">Stop</button>
+        <button id="btn-reset" class="btn btn-timer">Reset</button>
+      </div>
+      <p class="timer-label" id="timer-label" aria-live="polite">Pomodoro — 25 min</p>
+
+      <!-- Custom duration -->
+      <div class="timer-duration-row">
+        <label for="timer-minutes" class="duration-label">Set minutes:</label>
+        <input
+          type="number"
+          id="timer-minutes"
+          class="duration-input"
+          min="1"
+          max="60"
+          value="25"
+          aria-label="Custom timer duration in minutes"
+        />
+        <button id="btn-set-duration" class="btn btn-ghost btn-sm">Set</button>
+      </div>
+    </section>
+
+    <!-- ===== TO-DO LIST ===== -->
+    <section class="card todo-card" aria-labelledby="todo-heading">
+      <div class="card-header">
+        <h2 id="todo-heading">To-Do List</h2>
+        <div class="todo-header-controls">
+          <select id="todo-sort" class="sort-select" aria-label="Sort tasks">
+            <option value="default">Default</option>
+            <option value="az">A → Z</option>
+            <option value="pending">Pending first</option>
+          </select>
+          <span class="task-counter" id="task-counter" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <label for="todo-input" class="sr-only">New task</label>
+        <input
+          type="text"
+          id="todo-input"
+          placeholder="Add a new task…"
+          maxlength="120"
+          autocomplete="off"
+        />
+        <button id="btn-add-todo" class="btn btn-primary" aria-label="Add task">Add</button>
+      </div>
+
+      <ul id="todo-list" class="todo-list" role="list" aria-label="Task list"></ul>
+      <p class="empty-state" id="todo-empty" aria-live="polite">No tasks yet. Add one above!</p>
+    </section>
+
+    <!-- ===== QUICK LINKS ===== -->
+    <section class="card links-card" aria-labelledby="links-heading">
+      <h2 id="links-heading">Quick Links</h2>
+
+      <div class="input-row links-input-row">
+        <label for="link-name-input" class="sr-only">Link label</label>
+        <input
+          type="text"
+          id="link-name-input"
+          placeholder="Label"
+          maxlength="30"
+          autocomplete="off"
+        />
+        <label for="link-url-input" class="sr-only">Link URL</label>
+        <input
+          type="url"
+          id="link-url-input"
+          placeholder="https://…"
+          maxlength="200"
+          autocomplete="off"
+        />
+        <button id="btn-add-link" class="btn btn-primary" aria-label="Add link">Add</button>
+      </div>
+
+      <div id="quick-links-list" class="quick-links-list" role="list" aria-label="Quick links"></div>
+      <p class="empty-state" id="links-empty" aria-live="polite">No links yet. Add your favorites!</p>
+    </section>
+
+  </main>
+
+  <!-- ===== EDIT TASK MODAL ===== -->
+  <div
+    id="edit-modal"
+    class="modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+  >
+    <div class="modal">
+      <h3 id="modal-title">Edit Task</h3>
+      <label for="edit-input" class="sr-only">Task text</label>
+      <input type="text" id="edit-input" maxlength="120" autocomplete="off" />
+      <div class="modal-actions">
+        <button id="btn-cancel-edit" class="btn btn-ghost">Cancel</button>
+        <button id="btn-save-edit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TURTLE MASCOT ===== -->
+  <div id="turtle-mascot" class="turtle-mascot" aria-label="Turtle mascot" role="img" title="Click me!">
+
+    <!-- Speech bubble -->
+    <div class="turtle-bubble" id="turtle-bubble" aria-live="polite"></div>
+
+    <!-- SVG turtle — all drawn with basic shapes, no external assets -->
+    <svg class="turtle-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Shadow -->
+      <ellipse cx="40" cy="74" rx="18" ry="4" fill="rgba(0,0,0,0.18)" />
+
+      <!-- Back left leg -->
+      <ellipse class="turtle-leg turtle-leg-bl" cx="22" cy="58" rx="7" ry="5" fill="#4a9e6a" transform="rotate(-30 22 58)" />
+      <!-- Back right leg -->
+      <ellipse class="turtle-leg turtle-leg-br" cx="58" cy="58" rx="7" ry="5" fill="#4a9e6a" transform="rotate(30 58 58)" />
+      <!-- Front left leg -->
+      <ellipse class="turtle-leg turtle-leg-fl" cx="20" cy="42" rx="7" ry="5" fill="#4caf7d" transform="rotate(30 20 42)" />
+      <!-- Front right leg -->
+      <ellipse class="turtle-leg turtle-leg-fr" cx="60" cy="42" rx="7" ry="5" fill="#4caf7d" transform="rotate(-30 60 42)" />
+
+      <!-- Tail -->
+      <ellipse cx="40" cy="66" rx="4" ry="6" fill="#4a9e6a" />
+
+      <!-- Shell base -->
+      <ellipse cx="40" cy="46" rx="22" ry="20" fill="#4caf7d" />
+
+      <!-- Shell pattern -->
+      <ellipse cx="40" cy="43" rx="10" ry="9" fill="#3d9e68" opacity="0.7" />
+      <ellipse cx="27" cy="47" rx="6"  ry="5" fill="#3d9e68" opacity="0.6" />
+      <ellipse cx="53" cy="47" rx="6"  ry="5" fill="#3d9e68" opacity="0.6" />
+      <ellipse cx="33" cy="36" rx="5"  ry="4" fill="#3d9e68" opacity="0.5" />
+      <ellipse cx="47" cy="36" rx="5"  ry="4" fill="#3d9e68" opacity="0.5" />
+
+      <!-- Shell highlight -->
+      <ellipse cx="35" cy="38" rx="5" ry="4" fill="rgba(255,255,255,0.15)" />
+
+      <!-- Neck -->
+      <ellipse cx="40" cy="28" rx="8" ry="7" fill="#5dc98a" />
+
+      <!-- Head -->
+      <ellipse class="turtle-head" cx="40" cy="20" rx="12" ry="11" fill="#5dc98a" />
+
+      <!-- Eyes -->
+      <circle class="turtle-eye-l" cx="35" cy="17" r="3.5" fill="white" />
+      <circle class="turtle-eye-r" cx="45" cy="17" r="3.5" fill="white" />
+      <circle class="turtle-pupil-l" cx="35.8" cy="17.5" r="2" fill="#1a1d27" />
+      <circle class="turtle-pupil-r" cx="45.8" cy="17.5" r="2" fill="#1a1d27" />
+      <!-- Eye shine -->
+      <circle cx="36.6" cy="16.5" r="0.7" fill="white" />
+      <circle cx="46.6" cy="16.5" r="0.7" fill="white" />
+
+      <!-- Mouth — changes with mood via CSS -->
+      <path class="turtle-mouth" d="M36 23 Q40 26 44 23" stroke="#2d7a50" stroke-width="1.5" fill="none" stroke-linecap="round" />
+
+      <!-- Blush cheeks (show on happy states) -->
+      <ellipse class="turtle-blush" cx="31" cy="21" rx="4" ry="2.5" fill="#ff9eb5" opacity="0" />
+      <ellipse class="turtle-blush" cx="49" cy="21" rx="4" ry="2.5" fill="#ff9eb5" opacity="0" />
+
+      <!-- Zzz (show when sleeping) -->
+      <text class="turtle-zzz" x="52" y="14" font-size="7" fill="#8b90b0" opacity="0" font-family="sans-serif" font-weight="bold">z</text>
+      <text class="turtle-zzz" x="57" y="9"  font-size="5" fill="#8b90b0" opacity="0" font-family="sans-serif" font-weight="bold">z</text>
+
+      <!-- Stars (show when celebrating) -->
+      <text class="turtle-star" x="8"  y="18" font-size="9" opacity="0">⭐</text>
+      <text class="turtle-star" x="60" y="14" font-size="7" opacity="0">✨</text>
+    </svg>
+  </div>
+
+  <!-- ===== TOAST CONTAINER ===== -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
